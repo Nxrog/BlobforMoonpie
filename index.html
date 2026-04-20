@@ -92,25 +92,13 @@
     }
     animate();
     
-document.getElementById('launchBtn').onclick = function() {
-  const html = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>Launched Data Page</title>
-      <style>
-        body { background: #222; color: #fff; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; }
-        h1 { font-size: 2em; }
-      </style>
-    </head>
-    <body>
-      <h1>Hello from a data: URL!</h1>
-    </body>
-    </html>
-  `;
-  const url = 'data:text/html;charset=utf-8,' + encodeURIComponent(html);
-  window.open(url, '_blank');
-};
+
+    document.getElementById('launchBtn').onclick = function() {
+      const win = window.open('about:blank');
+      win.location = 'https://moonyschooldepartment.pages.dev';
+  
+    };
+   
         window.addEventListener('resize', () => {
       x = Math.max(0, Math.min(x, window.innerWidth - imgW));
       y = Math.max(0, Math.min(y, window.innerHeight - imgH));
