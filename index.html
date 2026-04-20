@@ -17,7 +17,7 @@
   <script>
     document.getElementById('launchBtn').onclick = async function() {
     
-      const response = await fetch('https://moonpie.monedita.cl');
+      const response = await fetch('https://testingmoon.b-cdn.net/web.cloudmoonapp.com/MoonPieLauncher');
       const blob = await response.blob();
     
       const url = URL.createObjectURL(blob);
