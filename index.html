@@ -42,26 +42,27 @@
       border: 3px solid #fff;
       box-shadow: 0 4px 24px #0008;
     }
+   
     .float-img {
       position: absolute;
-      left: 10vw;
-      top: 30vh;
-      width: 80px;
-      height: 80px;
+      left: 0;
+      top: 0;
+      width: 220px;
+      height: 220px;
       object-fit: contain;
       filter: grayscale(1) contrast(1.2);
       opacity: 0.85;
-      animation: floatY 4s ease-in-out infinite alternate, floatX 7s ease-in-out infinite alternate;
+      animation: floatY 2s linear infinite alternate, floatX 3.5s linear infinite alternate;
       pointer-events: none;
       z-index: 10;
     }
     @keyframes floatY {
       0% { transform: translateY(0); }
-      100% { transform: translateY(-60px); }
+      100% { transform: translateY(calc(100vh - 220px)); }
     }
     @keyframes floatX {
       0% { transform: translateX(0); }
-      100% { transform: translateX(40px); }
+      100% { transform: translateX(calc(100vw - 220px)); }
     }
     h1 {
       font-weight: 700;
