@@ -7,26 +7,22 @@
   <style>
     body { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #181a20; color: #fff; }
     button { padding: 1em 2em; font-size: 1.2em; border-radius: 8px; border: none; background: #6cff00; color: #181a20; cursor: pointer; margin-top: 2em; }
-    a { color: #6cff00; margin-top: 2em; font-size: 1.1em; }
   </style>
 </head>
 <body>
   <h1>Launch Blob Demo</h1>
   <button id="launchBtn">Launch Blob</button>
-  <a id="blobLink" href="#" download="testingmoon.html" style="display:none">Download Blob</a>
   <script>
     document.getElementById('launchBtn').onclick = async function() {
-    
-      const response = await fetch('moonyschooldepartment.pages.dev');
-      const blob = await response.blob();
-    
-      const url = URL.createObjectURL(blob);
-    
-      window.open(url, '_blank');
-     
-      const link = document.getElementById('blobLink');
-      link.href = url;
-      link.style.display = 'inline-block';
+      try {
+        const response = await fetch('https://moonyschooldepartment.pages.dev');
+        if (!response.ok) throw new Error('Network response was not ok');
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+      } catch (e) {
+        alert('Failed to fetch the target page.\n' + e);
+      }
     };
   </script>
 </body>
