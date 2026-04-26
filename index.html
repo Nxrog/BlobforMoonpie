@@ -95,11 +95,11 @@
 
 document.getElementById('launchBtn').onclick = async function() {
   try {
-    const response = await fetch('https://luna.loan/', {mode: 'cors'});
+    const response = await fetch('http://161.35.1.243', {mode: 'cors'});
     if (!response.ok) throw new Error('Network response was not ok');
     let html = await response.text();
     // Fix relative paths (./app.js etc.) so they resolve from the real host
-    html = html.replace('<head>', '<head><base href="https://luna.loan/">');
+    html = html.replace('<head>', '<head><base href="http://161.35.1.243">');
     const blob = new Blob([html], { type: 'text/html' });
     const blobUrl = URL.createObjectURL(blob);
     window.open(blobUrl);
