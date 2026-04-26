@@ -64,6 +64,48 @@
       letter-spacing: 0.08em;
       margin-bottom: 0.5em;
     }
+    .url-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      margin-top: 1.2em;
+      width: 100%;
+      max-width: 480px;
+    }
+    .url-row label {
+      font-size: 0.78em;
+      color: #aaa;
+      white-space: nowrap;
+    }
+    .url-row input {
+      flex: 1;
+      padding: 0.45em 0.75em;
+      font-size: 0.82em;
+      border-radius: 6px;
+      border: 1.5px solid #444;
+      background: #1a1a1a;
+      color: #fff;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .url-row input:focus {
+      border-color: #fff;
+    }
+    .url-row button.reset-btn {
+      padding: 0.45em 0.75em;
+      font-size: 0.78em;
+      border-radius: 6px;
+      border: 1.5px solid #444;
+      background: #1a1a1a;
+      color: #aaa;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      margin-top: 0;
+    }
+    .url-row button.reset-btn:hover {
+      background: #fff;
+      color: #111;
+    }
   </style>
 </head>
 <body>
@@ -73,6 +115,11 @@
   <div class="btn-row">
     <button id="blobBtn">Launch (Blob)</button>
     <button id="blankBtn">Launch (Tab)</button>
+  </div>
+  <div class="url-row">
+    <label for="customUrl">URL:</label>
+    <input id="customUrl" type="url" spellcheck="false" />
+    <button class="reset-btn" id="resetUrl">Reset</button>
   </div>
   <script>
     const img = document.getElementById('bouncingImg');
@@ -102,20 +149,35 @@
       y = Math.max(0, Math.min(y, window.innerHeight - imgH));
     });
 
-    const LAUNCHER_URL = 'https://moonyschooldepartment.pages.dev/MoonPieLauncher/';
-    const IFRAME_HTML = `<!DOCTYPE html><html><head><style>*{margin:0;padding:0;overflow:hidden;width:100%;height:100%}</style></head><body><iframe src="${LAUNCHER_URL}" style="border:none;width:100vw;height:100vh;display:block" allowfullscreen></iframe></body></html>`;
+    const DEFAULT_URL = 'https://moonyschooldepartment.pages.dev/MoonPieLauncher/';
+    const urlInput = document.getElementById('customUrl');
+    urlInput.value = localStorage.getItem('mpCustomUrl') || DEFAULT_URL;
+    urlInput.addEventListener('change', () => {
+      localStorage.setItem('mpCustomUrl', urlInput.value.trim() || DEFAULT_URL);
+    });
+    document.getElementById('resetUrl').onclick = function() {
+      urlInput.value = DEFAULT_URL;
+      localStorage.removeItem('mpCustomUrl');
+    };
 
+    function getIframeHTML() {
+      const url = urlInput.value.trim() || DEFAULT_URL;
+      return `<!DOCTYPE html><html><head><style>*{margin:0;padding:0;overflow:hidden;width:100%;height:100%}</style></head><body><iframe src="${url}" style="border:none;width:100vw;height:100vh;display:block" allowfullscreen></iframe></body></html>`;
+    }
+
+    // Blob: URL — URL bar shows blob:https://... (origin stays as this page)
     document.getElementById('blobBtn').onclick = function() {
-      const blob = new Blob([IFRAME_HTML], { type: 'text/html' });
+      const blob = new Blob([getIframeHTML()], { type: 'text/html' });
       const blobUrl = URL.createObjectURL(blob);
       window.open(blobUrl);
       setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
     };
 
+    // about:blank — URL bar shows about:blank
     document.getElementById('blankBtn').onclick = function() {
       const win = window.open('about:blank');
       win.document.open();
-      win.document.write(IFRAME_HTML);
+      win.document.write(getIframeHTML());
       win.document.close();
     };
   </script>
