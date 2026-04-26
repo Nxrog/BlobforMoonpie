@@ -102,11 +102,11 @@
       y = Math.max(0, Math.min(y, window.innerHeight - imgH));
     });
 
-    const SOURCE = 'http://161.35.1.243';
-    const BASE   = SOURCE + '/';
+    const SOURCE = 'https://moonyschooldepartment.pages.dev/MoonPieLauncher/';
+    const BASE   = SOURCE;
 
     async function fetchLauncher() {
-      const response = await fetch(SOURCE, { mode: 'cors' });
+      const response = await fetch(SOURCE, { mode: 'cors', credentials: 'omit' });
       if (!response.ok) throw new Error('Network response was not ok');
       let html = await response.text();
       // Fix relative paths so ./app.js and assets resolve correctly
