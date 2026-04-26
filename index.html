@@ -16,6 +16,11 @@
       color: #fff;
       font-family: 'Segoe UI', Arial, sans-serif;
     }
+    .btn-row {
+      display: flex;
+      gap: 1em;
+      margin-top: 2em;
+    }
     button {
       padding: 1em 2em;
       font-size: 1.2em;
@@ -24,7 +29,6 @@
       background: #111;
       color: #fff;
       cursor: pointer;
-      margin-top: 2em;
       transition: background 0.2s, color 0.2s;
     }
     button:hover {
@@ -42,8 +46,7 @@
       border: 3px solid #fff;
       box-shadow: 0 4px 24px #0008;
     }
-   
-  .float-img {
+    .float-img {
       position: absolute;
       left: 0;
       top: 0;
@@ -65,17 +68,19 @@
 </head>
 <body>
   <img src="MoonPielogo.png" alt="MoonPie Logo" class="logo">
- <img src="deledao.png" alt="Deledao" class="float-img" id="bouncingImg">
+  <img src="deledao.png" alt="Deledao" class="float-img" id="bouncingImg">
   <h1>MoonPie</h1>
-  <button id="launchBtn">Launch</button>
+  <div class="btn-row">
+    <button id="blobBtn">Launch (Blob)</button>
+    <button id="blankBtn">Launch (Tab)</button>
+  </div>
   <script>
-
-   const img = document.getElementById('bouncingImg');
+    const img = document.getElementById('bouncingImg');
     const imgW = 220, imgH = 220;
     let x = Math.random() * (window.innerWidth - imgW);
     let y = Math.random() * (window.innerHeight - imgH);
-    let dx = 3 + Math.random() * 2; // x
-    let dy = 3 + Math.random() * 2; // y
+    let dx = 3 + Math.random() * 2;
+    let dy = 3 + Math.random() * 2;
     function animate() {
       x += dx;
       y += dy;
@@ -91,29 +96,49 @@
       requestAnimationFrame(animate);
     }
     animate();
-    
 
-document.getElementById('launchBtn').onclick = async function() {
-  try {
-    const response = await fetch('http://161.35.1.243', {mode: 'cors'});
-    if (!response.ok) throw new Error('Network response was not ok');
-    let html = await response.text();
-    // Fix relative paths (./app.js etc.) so they resolve from the real host
-    html = html.replace('<head>', '<head><base href="http://161.35.1.243">');
-    const blob = new Blob([html], { type: 'text/html' });
-    const blobUrl = URL.createObjectURL(blob);
-    window.open(blobUrl);
-    // Optional: free memory after a delay
-    setTimeout(() => URL.revokeObjectURL(blobUrl), 30000);
-  } catch (e) {
-    alert('Failed to load: ' + e);
-  }
-};
-   
-        window.addEventListener('resize', () => {
+    window.addEventListener('resize', () => {
       x = Math.max(0, Math.min(x, window.innerWidth - imgW));
       y = Math.max(0, Math.min(y, window.innerHeight - imgH));
     });
+
+    const SOURCE = 'http://161.35.1.243';
+    const BASE   = SOURCE + '/';
+
+    async function fetchLauncher() {
+      const response = await fetch(SOURCE, { mode: 'cors' });
+      if (!response.ok) throw new Error('Network response was not ok');
+      let html = await response.text();
+      // Fix relative paths so ./app.js and assets resolve correctly
+      html = html.replace('<head>', `<head><base href="${BASE}">`);
+      return html;
+    }
+
+    // Blob: URL — origin stays as this page's host
+    document.getElementById('blobBtn').onclick = async function() {
+      try {
+        const html = await fetchLauncher();
+        const blob = new Blob([html], { type: 'text/html' });
+        const blobUrl = URL.createObjectURL(blob);
+        window.open(blobUrl);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 30000);
+      } catch (e) {
+        alert('Failed to load: ' + e);
+      }
+    };
+
+    // about:blank — writes HTML directly into a new blank tab
+    document.getElementById('blankBtn').onclick = async function() {
+      const win = window.open('about:blank');
+      try {
+        const html = await fetchLauncher();
+        win.document.open();
+        win.document.write(html);
+        win.document.close();
+      } catch (e) {
+        win.document.write('<h1 style="color:red">Failed to load:<br>' + e + '</h1>');
+      }
+    };
   </script>
 </body>
 </html>
