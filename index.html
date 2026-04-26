@@ -165,7 +165,7 @@
       return `<!DOCTYPE html><html><head><style>*{margin:0;padding:0;overflow:hidden;width:100%;height:100%}</style></head><body><iframe src="${url}" style="border:none;width:100vw;height:100vh;display:block" allowfullscreen></iframe></body></html>`;
     }
 
-    // Blob: URL — URL bar shows blob:https://... (origin stays as this page)
+    // Blob:
     document.getElementById('blobBtn').onclick = function() {
       const blob = new Blob([getIframeHTML()], { type: 'text/html' });
       const blobUrl = URL.createObjectURL(blob);
@@ -173,7 +173,7 @@
       setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
     };
 
-    // about:blank — URL bar shows about:blank
+    // about:blank
     document.getElementById('blankBtn').onclick = function() {
       const win = window.open('about:blank');
       win.document.open();
